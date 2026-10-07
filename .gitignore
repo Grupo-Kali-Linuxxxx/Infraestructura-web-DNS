@@ -1,0 +1,21 @@
+# Node
+node_modules/
+npm-debug.log
+
+# Variables de entorno
+.env
+.env.*
+
+# Logs
+*.log
+
+# Docker
+*.pid
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
