@@ -12,7 +12,8 @@ RUN apt-get update && \
     net-tools \
     iproute2 \
     procps \
-    systemd && \
+    systemd \
+    openssh-server && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
