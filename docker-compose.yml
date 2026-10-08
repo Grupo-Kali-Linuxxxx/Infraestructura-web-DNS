@@ -34,7 +34,9 @@ services:
       retries: 12
     networks: [web_network]
   ubuntu-server:
-    build: ./ubuntu-server
+    build:
+      context: ./ubuntu-server
+      dockerfile: Dockerfile.local
     container_name: ubuntu-server
     hostname: ubuntu-server
     privileged: true

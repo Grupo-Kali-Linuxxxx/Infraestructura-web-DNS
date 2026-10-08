@@ -1,2 +1,0 @@
-# Permisos para practicar administración en el contenedor Ubuntu.
-%administradores ALL=(ALL) NOPASSWD:ALL

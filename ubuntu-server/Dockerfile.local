@@ -1,6 +1,10 @@
 FROM ubuntu:24.04
 
-ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=noninteractive container=docker
+
+# Adaptación de descarga para Docker local. Los usuarios y claves son los originales.
+COPY --from=node:22-alpine /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+RUN sed -i 's|http://|https://|g' /etc/apt/sources.list.d/ubuntu.sources
 
 RUN apt-get update && \
     apt-get install -y \
@@ -48,3 +52,10 @@ RUN echo "%administradores ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/administrado
 WORKDIR /home
 
 CMD ["/bin/bash"]
+
+# Servicio de la práctica. Compose arranca systemd como PID 1.
+COPY lab-demo.service /etc/systemd/system/lab-demo.service
+RUN chmod 644 /etc/systemd/system/lab-demo.service && \
+    systemctl enable lab-demo.service && \
+    systemctl mask systemd-networkd-wait-online.service
+STOPSIGNAL SIGRTMIN+3

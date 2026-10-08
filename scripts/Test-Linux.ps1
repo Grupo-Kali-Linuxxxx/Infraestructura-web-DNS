@@ -23,6 +23,13 @@ $sudoUser = & docker compose exec -T --user ketfer ubuntu-server sudo -n id -u
 if ($LASTEXITCODE -ne 0 -or "$sudoUser".Trim() -ne '0') { throw 'sudo de ketfer no funciona' }
 Write-Host 'PASS: administración con sudo como ketfer'
 
+# Probar el cambio desde una cuenta normal usando la contraseña del compañero.
+$loginUser = & docker compose exec -T --user brian ubuntu-server sh -c "printf '%s\n' 'admin123' | su - adaniel -c whoami"
+if ($LASTEXITCODE -ne 0 -or "$loginUser".Trim() -ne 'adaniel') {
+    throw 'No se pudo cambiar de brian a adaniel con la contraseña configurada'
+}
+Write-Host 'PASS: cambio de usuario con contraseña mediante su'
+
 # Restaurar el servicio incluso si una comprobación de parada falla.
 try {
     Linux 'systemctl stop lab-demo.service' | Out-Null
