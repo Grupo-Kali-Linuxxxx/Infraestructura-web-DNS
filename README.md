@@ -14,15 +14,15 @@ docker compose up -d --build
 
 Abrir [Sitio 1](http://sitio1.local:8080/) y [Sitio 2](http://sitio2.local:8080/). El archivo hosts debe contener `127.0.0.1 sitio1.local sitio2.local`. En este equipo ya está configurado.
 
-## Informe y pruebas
+## Pruebas y capturas
 
-- [Informe Word](docs/Informe-implementacion.docx)
-- [Informe Markdown](docs/INFORME.md): explica los nueve puntos, comandos y defensa.
-- [Resultados HTTP](docs/evidencias/pruebas-http.json)
-- [Evidencias de ejecución](docs/evidencias)
+- [Pruebas HTTP](scripts/Test-Project.ps1): dos sitios, errores y sesiones.
+- [Pruebas Linux](scripts/Test-Linux.ps1): usuarios, paquetes, sudo y systemctl.
 - [Capturas y diagrama](screenshots)
 
-Los nueve puntos cubren errores 404/50x, logs, sesiones, curl, análisis del navegador, usuarios y paquetes, systemctl, arquitectura y capturas. DevTools Protocol registra tráfico real de Chrome. El informe incluye los pasos para mostrar manualmente Network y Application en la defensa.
+Las pruebas muestran resultados en pantalla y no crean la carpeta `docs`.
+Para guardar los resultados HTTP en un archivo elegido, usar
+`.\scripts\Test-Project.ps1 -OutputPath "$env:TEMP\pruebas-http.json"`.
 
 ## Estructura
 
@@ -30,10 +30,49 @@ Los nueve puntos cubren errores 404/50x, logs, sesiones, curl, análisis del nav
 backend/         Aplicaciones Node.js y páginas HTML
 nginx/           Hosts virtuales, logs y páginas de error
 ubuntu-server/   Usuarios, paquetes y servicio Linux
-scripts/         Una prueba reproducible en PowerShell
-docs/            Informe y evidencias
+scripts/         Pruebas reproducibles en PowerShell
 screenshots/     Cuatro capturas reales y el diagrama
 docker-compose.yml
 ```
 
 No se necesita instalar Node.js en Windows. Para detener: `docker compose stop`. Para retomar: `docker compose up -d`. Las sesiones están en memoria y se pierden al reiniciar el backend. Ubuntu privilegiado se usa para la práctica de systemd. El acceso web es HTTP local en 127.0.0.1:8080.
+
+## Integración del trabajo del grupo
+
+Se integró `main` del [repositorio del grupo](https://github.com/Grupo-Kali-Linuxxxx/Infraestructura-web-DNS),
+hasta el commit `f5c3926`, con la implementación local. Se conservan los cinco
+usuarios y el grupo `administradores` del compañero, sus paquetes Linux, sudo,
+el hostname y el arranque de systemd. Las páginas, sesiones y configuraciones
+de Nginx pertenecen a la implementación local y siguen funcionando juntas.
+
+Las cuentas no incluyen contraseñas compartidas. Para acceder y administrar:
+
+```powershell
+docker compose exec --user ketfer ubuntu-server bash
+```
+
+Dentro de Ubuntu se pueden ejecutar `whoami`, `id` y `sudo -n systemctl status
+lab-demo.service --no-pager`. Los miembros de `administradores` tienen sudo
+sin contraseña para esta práctica. Salir con `exit`.
+
+```powershell
+.\scripts\Test-Linux.ps1
+docker compose exec -T ubuntu-server systemctl status ssh --no-pager
+docker compose exec -T ubuntu-server journalctl -u lab-demo.service -n 5 --no-pager
+```
+
+Ubuntu descarga paquetes por HTTPS con certificados verificados. No publica
+SSH en Windows. Los puertos 3000 permanecen dentro de la red Docker.
+
+## Comprobar HTTP y logs
+
+```powershell
+curl.exe -v --noproxy "*" http://sitio1.local:8080/diagnostico
+docker compose exec -T nginx tail -n 10 /var/log/nginx/sitio1_access.log
+docker compose exec -T nginx tail -n 10 /var/log/nginx/sitio1_error.log
+```
+
+Errores: `/no-existe` devuelve 404, `/pruebas/500` devuelve 500 y
+`/pruebas/502` devuelve 502. Los errores del servidor comparten la página 50x.
+En Chrome, F12 y Network muestran método y estado. Application y Cookies
+permiten revisar `app1.sid` o `app2.sid`, HttpOnly y SameSite.

@@ -1,6 +1,7 @@
+param([string]$OutputPath = '')
+
 $ErrorActionPreference = 'Stop'
 Set-Location (Split-Path $PSScriptRoot -Parent)
-New-Item -ItemType Directory -Force docs/evidencias | Out-Null
 $results = [System.Collections.Generic.List[object]]::new()
 function Request($site, $path, $method='GET', $jar='') {
     $argsCurl = @('--silent','--show-error','--noproxy','*','--resolve',"${site}:8080:127.0.0.1",'-X',$method,'-w',"`n%{http_code}")
@@ -34,5 +35,7 @@ try {
     } finally { if(Test-Path $jar){Remove-Item -LiteralPath $jar} }
   }
 } finally {
-  $results | ConvertTo-Json | Set-Content -Encoding utf8 docs/evidencias/pruebas-http.json
+  if ($OutputPath) {
+    $results | ConvertTo-Json | Set-Content -Encoding utf8 -LiteralPath $OutputPath
+  }
 }

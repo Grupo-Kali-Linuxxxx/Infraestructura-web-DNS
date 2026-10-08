@@ -36,7 +36,10 @@ services:
   ubuntu-server:
     build: ./ubuntu-server
     container_name: ubuntu-server
+    hostname: ubuntu-server
     privileged: true
+    stdin_open: true
+    tty: true
     tmpfs: [/run, /run/lock, /tmp]
     command: ["/lib/systemd/systemd"]
     networks: [web_network]
