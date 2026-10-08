@@ -3,9 +3,6 @@
 Proyecto académico de implementación de una arquitectura
 cliente-servidor utilizando Docker, Nginx y Node.js.
 
-Consulta la [guía completa del trabajo realizado](docs/GUIA-COMPLETA.md):
-arquitectura, instalación, configuraciones, comandos, pruebas y correcciones.
-
 ## Inicio rápido desde PowerShell
 
 ```powershell

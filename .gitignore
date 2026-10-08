@@ -13,6 +13,9 @@ npm-debug.log
 # Copias locales de archivos del sistema
 .local-backups/
 
+# Guía para compartir directamente con los compañeros
+/docs/GUIA-COMPLETA.md
+
 # Logs
 *.log
 
