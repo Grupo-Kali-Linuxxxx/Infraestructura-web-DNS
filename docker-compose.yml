@@ -32,6 +32,15 @@ services:
     networks:
       - web_network
 
+  ubuntu-server:
+    build:
+      context: ./ubuntu
+    container_name: ubuntu-server
+    hostname: ubuntu-server
+    stdin_open: true
+    tty: true
+    networks:
+      - web_network
 
 networks:
   web_network:
