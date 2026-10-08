@@ -34,7 +34,7 @@ services:
 
   ubuntu-server:
     build:
-      context: ./ubuntu
+      context: ./ubuntu-server
     container_name: ubuntu-server
     hostname: ubuntu-server
     stdin_open: true
