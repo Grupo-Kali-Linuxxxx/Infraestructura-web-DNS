@@ -1,21 +1,4 @@
-# Node
 node_modules/
-npm-debug.log
-
-# Variables de entorno
+*.cookies
 .env
-.env.*
-
-# Logs
-*.log
-
-# Docker
-*.pid
-
-# Sistema operativo
-.DS_Store
-Thumbs.db
-
-# IDE
-.vscode/
-.idea/
+__pycache__/

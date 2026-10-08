@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>__APP__ | Laboratorio web</title>
+    <style>
+      body {
+        margin: 0;
+        background: #eef3f8;
+        color: #14263d;
+        font: 18px system-ui, sans-serif;
+      }
+
+      main {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 24px;
+      }
+
+      h1 { font-size: 2.5rem; }
+      .descripcion, footer { color: #48647c; }
+
+      button, .enlaces a {
+        display: inline-block;
+        margin: 6px 6px 6px 0;
+        padding: 12px 16px;
+        border: 0;
+        border-radius: 6px;
+        background: #174f89;
+        color: white;
+        text-decoration: none;
+        font: inherit;
+        cursor: pointer;
+      }
+
+      button:hover, .enlaces a:hover { background: #103b68; }
+      button:focus-visible, a:focus-visible { outline: 3px solid #e59618; }
+
+      pre {
+        padding: 20px;
+        border-radius: 6px;
+        background: white;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+
+      footer { margin-top: 30px; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="descripcion">Tecnología Web I</p>
+        <h1>Backend __APP__</h1>
+        <p>Servidor Node.js detrás del proxy Nginx.</p>
+      </header>
+
+      <section aria-labelledby="titulo-sesiones">
+        <h2 id="titulo-sesiones">Sesiones y cookies</h2>
+        <p>Crea una sesión, aumenta el contador y recarga para comprobar que se conserva.</p>
+        <div>
+          <button type="button" data-method="POST">Crear sesión</button>
+          <button type="button" data-method="POST" data-path="/incrementar">Incrementar</button>
+          <button type="button" data-method="GET">Consultar</button>
+          <button type="button" data-method="DELETE">Destruir sesión</button>
+        </div>
+        <pre id="estado" aria-live="polite">Consultando sesión…</pre>
+      </section>
+
+      <section class="enlaces" aria-labelledby="titulo-pruebas">
+        <h2 id="titulo-pruebas">Pruebas HTTP</h2>
+        <a href="/diagnostico">Ver diagnóstico</a>
+        <a href="/no-existe">Probar error 404</a>
+        <a href="/pruebas/502">Probar error 502</a>
+      </section>
+
+      <footer>
+        <p>La cookie identifica la sesión. El servidor guarda el contador durante 15 minutos.</p>
+        <p>Reiniciar el backend elimina sus sesiones.</p>
+      </footer>
+    </main>
+
+    <script>
+      const estado = document.getElementById('estado');
+
+      async function consultarSesion(method, path = '') {
+        try {
+          const respuesta = await fetch('/api/sesion' + path, { method });
+          const datos = await respuesta.json();
+          estado.textContent = 'HTTP ' + respuesta.status + '\n' + JSON.stringify(datos, null, 2);
+        } catch (error) {
+          estado.textContent = 'No se pudo conectar con el servidor.';
+        }
+      }
+
+      document.querySelectorAll('button[data-method]').forEach((boton) => {
+        boton.addEventListener('click', () => {
+          consultarSesion(boton.dataset.method, boton.dataset.path || '');
+        });
+      });
+
+      consultarSesion('GET');
+    </script>
+  </body>
+</html>

@@ -1,0 +1,62 @@
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive container=docker
+
+# Adaptación de descarga para Docker local. Los usuarios y claves son los originales.
+COPY --from=node:22-alpine /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+RUN sed -i 's|http://|https://|g' /etc/apt/sources.list.d/ubuntu.sources
+
+RUN apt-get update && \
+    apt-get install -y \
+    sudo \
+    curl \
+    nano \
+    vim \
+    iputils-ping \
+    net-tools \
+    iproute2 \
+    procps \
+    systemd \
+    openssh-server && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Crear grupo de administradores
+RUN groupadd administradores
+
+# Crear usuarios
+RUN useradd -m -s /bin/bash brian && \
+    useradd -m -s /bin/bash charles && \
+    useradd -m -s /bin/bash ketfer && \
+    useradd -m -s /bin/bash marco && \
+    useradd -m -s /bin/bash adaniel
+
+# Establecer contraseñas
+RUN echo "brian:admin123" | chpasswd && \
+    echo "charles:admin123" | chpasswd && \
+    echo "ketfer:admin123" | chpasswd && \
+    echo "marco:admin123" | chpasswd && \
+    echo "adaniel:admin123" | chpasswd
+
+# Agregar todos los usuarios al grupo administradores
+RUN usermod -aG administradores brian && \
+    usermod -aG administradores charles && \
+    usermod -aG administradores ketfer && \
+    usermod -aG administradores marco && \
+    usermod -aG administradores adaniel
+
+# Sudo solicita la contraseña del usuario en cada ejecución.
+RUN printf '%s\n' '%administradores ALL=(ALL) ALL' 'Defaults:%administradores timestamp_timeout=0' > /etc/sudoers.d/administradores && \
+    chmod 440 /etc/sudoers.d/administradores && \
+    visudo -cf /etc/sudoers.d/administradores
+
+WORKDIR /home
+
+CMD ["/bin/bash"]
+
+# Servicio de la práctica. Compose arranca systemd como PID 1.
+COPY lab-demo.service /etc/systemd/system/lab-demo.service
+RUN chmod 644 /etc/systemd/system/lab-demo.service && \
+    systemctl enable lab-demo.service && \
+    systemctl mask systemd-networkd-wait-online.service
+STOPSIGNAL SIGRTMIN+3

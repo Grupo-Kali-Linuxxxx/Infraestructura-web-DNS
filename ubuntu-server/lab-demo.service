@@ -1,0 +1,11 @@
+[Unit]
+Description=Demostracion academica de servicios Linux
+After=basic.target
+[Service]
+User=ketfer
+ExecStart=/bin/sh -c 'while true; do echo "Servicio Linux activo"; sleep 10; done'
+Restart=on-failure
+NoNewPrivileges=true
+PrivateTmp=true
+[Install]
+WantedBy=multi-user.target

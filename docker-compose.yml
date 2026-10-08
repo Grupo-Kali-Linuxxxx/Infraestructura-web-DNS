@@ -1,53 +1,51 @@
 services:
-
   nginx:
     image: nginx:alpine
     container_name: web-nginx
-    ports:
-      - "8080:80"
+    ports: ["127.0.0.1:8080:80"]
     volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./nginx/errors:/usr/share/nginx/html/errors
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/errors:/usr/share/nginx/html/errors:ro
+      - nginx_logs:/var/log/nginx
     depends_on:
-      - app1
-      - app2
-    networks:
-      - web_network
-
+      app1: {condition: service_healthy}
+      app2: {condition: service_healthy}
+    networks: [web_network]
   app1:
-    build:
-      context: ./backend/app1
+    build: ./backend/app1
     container_name: backend-app1
-    expose:
-      - "3000"
-    networks:
-      - web_network
-
+    environment: {APP_NAME: "App 1", COOKIE_NAME: app1.sid}
+    expose: ["3000"]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    networks: [web_network]
   app2:
-    build:
-      context: ./backend/app2
+    build: ./backend/app2
     container_name: backend-app2
-    expose:
-      - "3000"
-    networks:
-      - web_network
-
+    environment: {APP_NAME: "App 2", COOKIE_NAME: app2.sid}
+    expose: ["3000"]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    networks: [web_network]
   ubuntu-server:
     build:
       context: ./ubuntu-server
+      dockerfile: Dockerfile.local
     container_name: ubuntu-server
     hostname: ubuntu-server
     privileged: true
     stdin_open: true
     tty: true
-    tmpfs:
-      - /run
-      - /run/lock
-      - /tmp
+    tmpfs: [/run, /run/lock, /tmp]
     command: ["/lib/systemd/systemd"]
-    networks:
-      - web_network
-
+    networks: [web_network]
 networks:
-  web_network:
-    driver: bridge
+  web_network: {driver: bridge}
+volumes:
+  nginx_logs:
