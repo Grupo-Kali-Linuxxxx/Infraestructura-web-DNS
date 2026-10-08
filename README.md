@@ -46,30 +46,46 @@ el hostname y el arranque de systemd. Las páginas, sesiones y configuraciones
 de Nginx pertenecen a la implementación local y siguen funcionando juntas.
 
 `ubuntu-server/Dockerfile` se conserva exactamente como está en `main` del
-compañero. `Dockerfile.local` conserva los mismos usuarios, contraseñas,
-grupo y sudo, y sólo agrega la descarga por HTTPS y el servicio de la práctica.
+compañero. `Dockerfile.local` conserva los mismos usuarios, contraseñas y
+grupo, agrega la descarga por HTTPS y el servicio de la práctica, y configura
+sudo para exigir contraseña por petición del usuario.
 Compose utiliza este archivo para construir Ubuntu en este equipo.
 
-Para entrar como indica el compañero, abrir el contenedor como root:
+## Entrar y cambiar de usuario con contraseña
+
+Desde PowerShell, entrar como adaniel:
 
 ```powershell
-docker exec -it ubuntu-server bash
+.\scripts\Enter-Ubuntu.ps1 -Usuario adaniel
 ```
 
-Dentro de Ubuntu, cambiar de usuario y comprobar su identidad:
+El script ejecuta `docker exec -it --user nobody ubuntu-server su - adaniel`.
+Se empieza como una cuenta sin privilegios para que se solicite la contraseña.
+Escribir `admin123` y pulsar Enter. La contraseña no muestra caracteres al escribir.
+
+Dentro de Ubuntu, comprobar identidad, navegar y cambiar de usuario:
 
 ```bash
-su - adaniel
 whoami
 id
+pwd
+ls
+cd ~
+su - brian
+whoami
 sudo systemctl status lab-demo.service --no-pager
 ```
 
 Usuarios: `brian`, `charles`, `ketfer`, `marco` y `adaniel`. La contraseña
-configurada por el compañero es `admin123` para los cinco. Al usar `su` desde
-root no se solicita contraseña. Al cambiar desde un usuario normal a otro sí
-se solicita. Los miembros de `administradores` tienen sudo sin contraseña.
-`exit` regresa a root y otro `exit` sale del contenedor.
+configurada por el compañero es `admin123` para los cinco. `su - brian` pide
+la contraseña de brian. `sudo` pide la del usuario actual cada vez.
+Después de entrar como adaniel y cambiar a brian, `exit` regresa a adaniel
+y otro `exit` sale del contenedor. Para entrar directamente como otro usuario,
+usar `.\scripts\Enter-Ubuntu.ps1 -Usuario marco`, por ejemplo.
+
+El acceso administrativo de Docker como root o con `--user` puede omitir
+autenticación Linux. Por eso, para demostrar contraseñas se usa el script
+anterior. Esta configuración no puede limitar a quien controla Docker.
 
 ```powershell
 .\scripts\Test-Linux.ps1

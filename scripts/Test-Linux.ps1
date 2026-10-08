@@ -19,9 +19,23 @@ foreach ($user in 'brian','charles','ketfer','marco','adaniel') {
 Linux 'dpkg-query -W sudo curl nano vim iputils-ping net-tools iproute2 procps systemd openssh-server' | Out-Null
 Write-Host 'PASS: paquetes Linux instalados'
 
-$sudoUser = & docker compose exec -T --user ketfer ubuntu-server sudo -n id -u
+$noPassword = & docker compose exec -T --user ketfer ubuntu-server sudo -n -k id -u 2>$null
+if ($LASTEXITCODE -eq 0) { throw 'sudo permitió administrar sin contraseña' }
+Write-Host 'PASS: sudo exige contraseña'
+
+$sudoUser = & docker compose exec -T --user ketfer ubuntu-server sh -c "printf '%s\n' 'admin123' | sudo -S -k id -u"
 if ($LASTEXITCODE -ne 0 -or "$sudoUser".Trim() -ne '0') { throw 'sudo de ketfer no funciona' }
-Write-Host 'PASS: administración con sudo como ketfer'
+Write-Host 'PASS: administración con sudo y contraseña como ketfer'
+
+$invalidLogin = & docker compose exec -T --user nobody ubuntu-server sh -c "printf '%s\n' 'incorrecta' | su - adaniel -c whoami" 2>$null
+if ($LASTEXITCODE -eq 0) { throw 'su aceptó una contraseña incorrecta' }
+Write-Host 'PASS: su rechaza una contraseña incorrecta'
+
+$initialLogin = & docker compose exec -T --user nobody ubuntu-server sh -c "printf '%s\n' 'admin123' | su - adaniel -c whoami"
+if ($LASTEXITCODE -ne 0 -or "$initialLogin".Trim() -ne 'adaniel') {
+    throw 'Falló la entrada con contraseña desde nobody'
+}
+Write-Host 'PASS: entrada con contraseña desde nobody'
 
 # Probar el cambio desde una cuenta normal usando la contraseña del compañero.
 $loginUser = & docker compose exec -T --user brian ubuntu-server sh -c "printf '%s\n' 'admin123' | su - adaniel -c whoami"

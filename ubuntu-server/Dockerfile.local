@@ -45,9 +45,10 @@ RUN usermod -aG administradores brian && \
     usermod -aG administradores marco && \
     usermod -aG administradores adaniel
 
-# Dar permisos administrativos mediante sudo
-RUN echo "%administradores ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/administradores && \
-    chmod 440 /etc/sudoers.d/administradores
+# Sudo solicita la contraseña del usuario en cada ejecución.
+RUN printf '%s\n' '%administradores ALL=(ALL) ALL' 'Defaults:%administradores timestamp_timeout=0' > /etc/sudoers.d/administradores && \
+    chmod 440 /etc/sudoers.d/administradores && \
+    visudo -cf /etc/sudoers.d/administradores
 
 WORKDIR /home
 
