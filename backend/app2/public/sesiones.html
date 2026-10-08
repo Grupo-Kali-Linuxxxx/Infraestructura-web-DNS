@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sesiones y cookies · Infraestructura Web DNS</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 24px; background: #eef3f8; color: #172e46;
+      font: 16px/1.6 system-ui, sans-serif; }
+    main { max-width: 760px; margin: 40px auto; padding: clamp(24px, 5vw, 44px);
+      background: white; border-radius: 12px; border-top: 6px solid #276aab; }
+    h1 { margin: 0 0 12px; line-height: 1.3; font-size: 28px; }
+    .state { padding: 18px; margin: 24px 0; background: #f2f6fb; border-radius: 8px; }
+    .counter { font-size: 44px; font-weight: 700; margin: 0; }
+    .controls { display: flex; gap: 10px; flex-wrap: wrap; }
+    button { cursor: pointer; border: 0; padding: 11px 16px; border-radius: 6px;
+      background: #205d96; color: white; font: inherit; }
+    button:last-child { background: #8a3b32; }
+    button:disabled { cursor: wait; opacity: .6; }
+    button:focus-visible, a:focus-visible { outline: 3px solid #172e46; outline-offset: 4px; }
+    #feedback { min-height: 26px; }
+    small { display: block; color: #51677d; }
+    a { color: #205d96; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Sesiones y cookies</h1>
+    <p>La cookie identifica tu sesión. El contador se guarda en el servidor y se recupera al consultar o recargar esta página.</p>
+    <section class="state" aria-label="Estado de la sesión">
+      <p id="application">Consultando aplicación…</p>
+      <p id="state">Consultando sesión…</p>
+      <p class="counter" id="counter" aria-label="Contador">0</p>
+    </section>
+    <div class="controls">
+      <button type="button" id="create">Crear sesión</button>
+      <button type="button" id="increment">Incrementar</button>
+      <button type="button" id="read">Consultar</button>
+      <button type="button" id="destroy">Destruir sesión</button>
+    </div>
+    <p id="feedback" role="status" aria-live="polite"></p>
+    <small>La cookie HttpOnly se consulta en DevTools, no desde JavaScript. Las sesiones de esta práctica viven en memoria y se pierden al reiniciar el backend.</small>
+    <p><a href="/">Volver al inicio</a></p>
+    <noscript>Activa JavaScript para usar los controles o utiliza los comandos curl de la documentación.</noscript>
+  </main>
+  <script>
+    const buttons = [...document.querySelectorAll("button")];
+    const feedback = document.getElementById("feedback");
+    async function requestSession(method = "GET", suffix = "") {
+      buttons.forEach(button => { button.disabled = true; });
+      feedback.textContent = "Procesando…";
+      try {
+        const response = await fetch("/api/sesion" + suffix, {
+          method, credentials: "same-origin", cache: "no-store",
+          headers: { Accept: "application/json" }
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "No se pudo completar la petición.");
+        document.getElementById("application").textContent = "Aplicación: " + data.aplicacion;
+        document.getElementById("state").textContent = data.activa ? "Sesión activa" : "Sin sesión activa";
+        document.getElementById("counter").textContent = String(data.contador);
+        feedback.textContent = method === "DELETE" ? "Sesión destruida." :
+          method === "POST" && !suffix ? "Nueva sesión creada." : "Estado actualizado.";
+      } catch (error) {
+        feedback.textContent = error.message;
+      } finally {
+        buttons.forEach(button => { button.disabled = false; });
+      }
+    }
+    document.getElementById("create").addEventListener("click", () => requestSession("POST"));
+    document.getElementById("increment").addEventListener("click", () => requestSession("POST", "/incrementar"));
+    document.getElementById("read").addEventListener("click", () => requestSession());
+    document.getElementById("destroy").addEventListener("click", () => requestSession("DELETE"));
+    requestSession();
+  </script>
+</body>
+</html>

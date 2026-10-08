@@ -27,12 +27,10 @@ RUN useradd -m -s /bin/bash brian && \
     useradd -m -s /bin/bash marco && \
     useradd -m -s /bin/bash adaniel
 
-# Establecer contraseñas
-RUN echo "brian:admin123" | chpasswd && \
-    echo "charles:admin123" | chpasswd && \
-    echo "ketfer:admin123" | chpasswd && \
-    echo "marco:admin123" | chpasswd && \
-    echo "adaniel:admin123" | chpasswd
+# Sin contraseñas incrustadas: acceso al laboratorio mediante docker compose exec.
+RUN for usuario in brian charles ketfer marco adaniel; do \
+        passwd -l "$usuario" && chmod 700 "/home/$usuario"; \
+    done
 
 # Agregar todos los usuarios al grupo administradores
 RUN usermod -aG administradores brian && \
@@ -41,10 +39,19 @@ RUN usermod -aG administradores brian && \
     usermod -aG administradores marco && \
     usermod -aG administradores adaniel
 
-# Dar permisos administrativos mediante sudo
-RUN echo "%administradores ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/administradores && \
-    chmod 440 /etc/sudoers.d/administradores
+# Delegar únicamente el control del servicio académico; no dar sudo irrestricto.
+COPY administradores.sudoers /etc/sudoers.d/administradores
+RUN chmod 440 /etc/sudoers.d/administradores && visudo -cf /etc/sudoers.d/administradores
+
+COPY lab-demo.sh /usr/local/bin/lab-demo
+COPY lab-demo.service /etc/systemd/system/lab-demo.service
+# Normalizar CRLF al construir desde Windows.
+RUN sed -i 's/\r$//' /usr/local/bin/lab-demo /etc/systemd/system/lab-demo.service && \
+    chmod 755 /usr/local/bin/lab-demo && \
+    chmod 644 /etc/systemd/system/lab-demo.service && \
+    systemctl enable lab-demo.service
 
 WORKDIR /home
 
-CMD ["/bin/bash"]
+STOPSIGNAL SIGRTMIN+3
+CMD ["/lib/systemd/systemd"]

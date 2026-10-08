@@ -5,6 +5,13 @@ npm-debug.log
 # Variables de entorno
 .env
 .env.*
+!.env.example
+
+# Archivos de cookies de las pruebas HTTP
+*.cookies
+
+# Copias locales de archivos del sistema
+.local-backups/
 
 # Logs
 *.log

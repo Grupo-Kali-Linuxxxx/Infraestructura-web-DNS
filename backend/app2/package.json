@@ -1,0 +1,13 @@
+{
+  "name": "infraestructura-web-dns-app2",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Backend académico APP2 detrás de Nginx",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check server.js"
+  },
+  "engines": { "node": ">=22" },
+  "dependencies": { "express": "^5.1.0", "express-session": "^1.18.1" }
+}

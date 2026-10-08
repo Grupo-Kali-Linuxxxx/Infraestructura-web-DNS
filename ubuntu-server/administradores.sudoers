@@ -1,0 +1,2 @@
+# Sólo estas operaciones exactas; no permite controlar otros servicios.
+%administradores ALL=(root) NOPASSWD: /usr/bin/systemctl start lab-demo.service, /usr/bin/systemctl stop lab-demo.service, /usr/bin/systemctl restart lab-demo.service

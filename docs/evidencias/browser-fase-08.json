@@ -1,0 +1,211 @@
+{
+  "browser": "Chrome/154.0.8037.97",
+  "mode": "headless, perfil temporal, CDP",
+  "nameResolution": "Windows, sin reglas temporales",
+  "cookies": [
+    {
+      "name": "app1.sid",
+      "domain": "sitio1.local",
+      "path": "/",
+      "httpOnly": true,
+      "sameSite": "Lax",
+      "secure": false,
+      "value": "[OMITIDO]"
+    },
+    {
+      "name": "app2.sid",
+      "domain": "sitio2.local",
+      "path": "/",
+      "httpOnly": true,
+      "sameSite": "Lax",
+      "secure": false,
+      "value": "[OMITIDO]"
+    }
+  ],
+  "network": [
+    {
+      "method": "GET",
+      "url": "http://sitio1.local:8080/sesiones",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "no-store",
+      "cookieSent": false
+    },
+    {
+      "method": "GET",
+      "url": "http://sitio1.local:8080/api/sesion",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "no-store",
+      "cookieSent": false
+    },
+    {
+      "method": "GET",
+      "url": "http://sitio1.local:8080/favicon.ico",
+      "status": 404,
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "no-store",
+      "cookieSent": false
+    },
+    {
+      "method": "POST",
+      "url": "http://sitio1.local:8080/api/sesion",
+      "status": 201,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "no-store",
+      "cookieSent": false
+    },
+    {
+      "method": "POST",
+      "url": "http://sitio1.local:8080/api/sesion/incrementar",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "no-store",
+      "cookieSent": true
+    },
+    {
+      "method": "POST",
+      "url": "http://sitio1.local:8080/api/sesion/incrementar",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "no-store",
+      "cookieSent": true
+    },
+    {
+      "method": "GET",
+      "url": "http://sitio1.local:8080/api/sesion",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "no-store",
+      "cookieSent": true
+    },
+    {
+      "method": "GET",
+      "url": "http://sitio2.local:8080/sesiones",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "no-store",
+      "cookieSent": false
+    },
+    {
+      "method": "GET",
+      "url": "http://sitio2.local:8080/api/sesion",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "no-store",
+      "cookieSent": false
+    },
+    {
+      "method": "GET",
+      "url": "http://sitio2.local:8080/favicon.ico",
+      "status": 404,
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "no-store",
+      "cookieSent": false
+    },
+    {
+      "method": "POST",
+      "url": "http://sitio2.local:8080/api/sesion",
+      "status": 201,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "no-store",
+      "cookieSent": false
+    },
+    {
+      "method": "POST",
+      "url": "http://sitio2.local:8080/api/sesion/incrementar",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "no-store",
+      "cookieSent": true
+    },
+    {
+      "method": "GET",
+      "url": "http://sitio2.local:8080/api/sesion",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "no-store",
+      "cookieSent": true
+    },
+    {
+      "method": "GET",
+      "url": "http://sitio1.local:8080/sesiones",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "no-store",
+      "cookieSent": true
+    },
+    {
+      "method": "GET",
+      "url": "http://sitio1.local:8080/api/sesion",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "no-store",
+      "cookieSent": true
+    },
+    {
+      "method": "DELETE",
+      "url": "http://sitio1.local:8080/api/sesion",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "no-store",
+      "cookieSent": true
+    },
+    {
+      "method": "POST",
+      "url": "http://sitio1.local:8080/api/sesion",
+      "status": 201,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "no-store",
+      "cookieSent": false
+    },
+    {
+      "method": "DELETE",
+      "url": "http://sitio1.local:8080/api/sesion",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "no-store",
+      "cookieSent": true
+    },
+    {
+      "method": "GET",
+      "url": "http://sitio2.local:8080/sesiones",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "no-store",
+      "cookieSent": true
+    },
+    {
+      "method": "GET",
+      "url": "http://sitio2.local:8080/api/sesion",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "no-store",
+      "cookieSent": true
+    },
+    {
+      "method": "DELETE",
+      "url": "http://sitio2.local:8080/api/sesion",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "no-store",
+      "cookieSent": true
+    },
+    {
+      "method": "GET",
+      "url": "http://sitio1.local:8080/no-existe",
+      "status": 404,
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "no-store",
+      "cookieSent": false
+    },
+    {
+      "method": "GET",
+      "url": "http://sitio1.local:8080/pruebas/502",
+      "status": 502,
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "no-store",
+      "cookieSent": false
+    }
+  ]
+}
