@@ -1,0 +1,46 @@
+
+ // /etc/bind/named.conf.local — ns1 con dos vistas (split-horizon)
+
+include "/etc/bind/transferencia.key";
+
+acl "red-colegio" {
+    10.10.10.0/24;
+    127.0.0.0/8;
+};
+
+// 1. Vista interna: PCs del colegio y ns2
+view "interna" {
+    match-clients { "red-colegio"; };
+
+    zone "horizonte.internal" {
+        type primary;
+        file "/var/lib/bind/db.horizonte.internal";
+        allow-transfer { key "transferencia-horizonte"; };
+        also-notify { 10.10.10.3; };
+    };
+
+    zone "10.10.10.in-addr.arpa" {
+        type primary;
+        file "/var/lib/bind/db.10.10.10";
+        allow-transfer { key "transferencia-horizonte"; };
+        also-notify { 10.10.10.3; };
+    };
+
+    // Dominio público con direcciones privadas para la red interna
+    zone "ue-horizonte.example" {
+        type primary;
+        file "/var/lib/bind/interna/db.ue-horizonte.example";
+    };
+};
+
+// 2. Vista externa: clientes que no coinciden con la ACL interna
+view "externa" {
+    match-clients { any; };
+
+    zone "ue-horizonte.example" {
+        type primary;
+        file "/var/lib/bind/externa/db.ue-horizonte.example";
+        dnssec-policy "horizonte";
+        inline-signing yes;
+    };
+};

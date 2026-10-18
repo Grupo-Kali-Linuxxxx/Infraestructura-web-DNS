@@ -1,0 +1,2 @@
+subjectAltName=DNS:resolutor.horizonte.internal,IP:10.10.10.4
+extendedKeyUsage=serverAuth

@@ -1,0 +1,8 @@
+:root { --azul: #1d4e89; --sol: #f2a900; --texto: #1f2933; --fondo: #f7f9fc; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, sans-serif; color: var(--texto); background: var(--fondo); line-height: 1.6; }
+header { background: var(--azul); color: #fff; padding: 2rem 1rem; text-align: center; }
+header p { color: var(--sol); margin: 0; }
+main { max-width: 60rem; margin: 0 auto; padding: 1rem; }
+a { color: var(--azul); }
+footer { text-align: center; font-size: .875rem; padding: 1rem; }

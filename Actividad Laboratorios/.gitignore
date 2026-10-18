@@ -1,0 +1,10 @@
+﻿# Respaldos de Docker y discos virtuales
+*.tar
+*.tar.gz
+*.vhdx
+backup-*/
+backup-horizonte/
+backup-red-dns/
+
+# Archivos temporales
+*.log

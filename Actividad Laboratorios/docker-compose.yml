@@ -1,0 +1,21 @@
+# Laboratorio virtual de la U.E. Horizonte (sin VirtualBox): Ubuntu Server 24.04 con systemd.
+#   docker compose up -d --build        # la PRIMERA vez: construye y enciende el "servidor"
+#   docker compose exec servidor bash   # entras como root (luego: su - tuusuario)
+#   docker compose stop / start         # apagar y encender conservando TODO lo instalado
+#   docker compose down                 # ¡cuidado! borra el servidor (solo se conserva /home)
+services:
+  servidor:
+    image: horizonte-lab06:backup
+    container_name: horizonte-sevidor-lab02r
+    hostname: srv-horizonte
+    privileged: true          # necesario para que systemd funcione dentro del contenedor
+    cgroup: host
+    tmpfs: [/run, /run/lock, /tmp]
+    ports:
+      - "8081:80"             # http://localhost:8080 → Nginx del servidor
+      - "8443:443"            # https://localhost:8443
+      - "2222:22"             # ssh -p 2222 usuario@localhost
+    volumes:
+      - home:/home
+volumes:
+  home:
